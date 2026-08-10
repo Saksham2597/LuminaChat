@@ -23,7 +23,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-900 text-white font-sans selection:bg-indigo-500 selection:text-white">
+      <div className="min-h-screen bg-[#e0e5ec] text-slate-700 font-sans selection:bg-indigo-200 selection:text-indigo-900">
         <Routes>
           <Route path="/" element={<Navigate to={token ? "/dashboard" : "/login"} />} />
           <Route path="/login" element={<Login setToken={setToken} />} />

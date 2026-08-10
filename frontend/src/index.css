@@ -6,33 +6,28 @@
 
 @layer base {
   body {
-    @apply font-['Outfit'] bg-[#0a0a0f] text-gray-100 antialiased overflow-x-hidden selection:bg-purple-500/30 selection:text-purple-200;
+    @apply font-['Outfit'] bg-[#e0e5ec] text-slate-700 antialiased overflow-x-hidden selection:bg-indigo-200 selection:text-indigo-900;
   }
 }
 
 @layer utilities {
-  .glass-panel {
-    @apply bg-[#1a1a24]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)];
+  .neu-flat {
+    @apply bg-[#e0e5ec] shadow-[9px_9px_16px_rgb(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)];
   }
   
-  .glass-input {
-    @apply bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:bg-white/10 backdrop-blur-sm transition-all;
+  .neu-pressed {
+    @apply bg-[#e0e5ec] shadow-[inset_6px_6px_10px_0_rgba(163,177,198,0.7),inset_-6px_-6px_10px_0_rgba(255,255,255,0.8)] focus:outline-none transition-shadow duration-300;
   }
-  
-  .animated-gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-500 to-cyan-400 animate-gradient-x bg-[length:200%_auto];
-  }
-}
 
-@keyframes gradient-x {
-  0%, 100% {
-    background-position: 0% 50%;
+  .neu-pressed-focus {
+    @apply focus:shadow-[inset_2px_2px_5px_0_rgba(163,177,198,0.7),inset_-2px_-2px_5px_0_rgba(255,255,255,0.8),0_0_0_2px_rgba(90,103,216,0.5)];
   }
-  50% {
-    background-position: 100% 50%;
-  }
-}
 
-.animate-gradient-x {
-  animation: gradient-x 3s ease infinite;
+  .neu-convex {
+    @apply bg-gradient-to-br from-[#f0f5fd] to-[#cacfd5] shadow-[9px_9px_16px_rgb(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)];
+  }
+
+  .neu-active {
+    @apply active:shadow-[inset_6px_6px_10px_0_rgba(163,177,198,0.7),inset_-6px_-6px_10px_0_rgba(255,255,255,0.8)] active:bg-[#e0e5ec];
+  }
 }

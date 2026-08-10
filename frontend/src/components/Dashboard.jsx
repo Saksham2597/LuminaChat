@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageSquarePlus, LogOut, Sparkles } from 'lucide-react';
+import { MessageSquarePlus, LogOut, LayoutGrid } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../lib/api';
 
@@ -35,11 +35,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center p-4 pt-20 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[150px] pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[150px] pointer-events-none animate-pulse" style={{ animationDelay: '3s' }}></div>
-
+    <div className="flex min-h-screen flex-col items-center p-4 pt-20 relative bg-[#e0e5ec]">
+      
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -47,9 +44,9 @@ export default function Dashboard() {
       >
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 rounded-full glass-panel px-5 py-2.5 text-sm font-semibold text-gray-300 hover:text-white hover:bg-white/10 transition-all shadow-lg"
+          className="flex items-center gap-2 rounded-2xl neu-convex neu-active px-5 py-3 text-sm font-bold text-slate-500 hover:text-slate-700 transition-all"
         >
-          <LogOut size={16} className="text-purple-400" />
+          <LogOut size={18} strokeWidth={2.5} className="text-indigo-400" />
           Logout
         </button>
       </motion.div>
@@ -58,41 +55,41 @@ export default function Dashboard() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-lg space-y-8 p-10 glass-panel rounded-[2rem] relative z-10 mt-10"
+        className="w-full max-w-lg space-y-8 p-12 neu-flat rounded-[2.5rem] relative z-10 mt-10"
       >
         <div className="text-center">
           <motion.div 
             whileHover={{ rotate: 180 }}
             transition={{ duration: 0.5 }}
-            className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-500/20 to-cyan-500/20 text-cyan-400 mb-6 border border-white/10 shadow-inner"
+            className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] neu-convex text-indigo-500 mb-8"
           >
-            <Sparkles size={32} />
+            <LayoutGrid size={40} strokeWidth={2} />
           </motion.div>
-          <h2 className="text-4xl font-extrabold tracking-tight text-white mb-3">
-            Join a <span className="animated-gradient-text">Space</span>
+          <h2 className="text-4xl font-extrabold tracking-tight text-slate-700 mb-3">
+            Join a Space
           </h2>
-          <p className="text-gray-400 font-medium">Create a new room or enter an existing one.</p>
+          <p className="text-slate-500 font-medium">Create a new room or enter an existing one.</p>
         </div>
 
-        <form className="mt-10 space-y-6" onSubmit={handleCreateRoom}>
+        <form className="mt-12 space-y-8" onSubmit={handleCreateRoom}>
           {error && (
             <motion.div 
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="rounded-xl bg-red-500/10 p-4 border border-red-500/20 backdrop-blur-md"
+              className="rounded-2xl p-4 neu-pressed"
             >
-              <div className="text-sm text-red-400 font-medium text-center">{error}</div>
+              <div className="text-sm text-red-500 font-bold text-center">{error}</div>
             </motion.div>
           )}
           
           <div className="relative group">
-             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <MessageSquarePlus className="h-5 w-5 text-gray-400 group-focus-within:text-purple-400 transition-colors" />
+             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-5">
+                <MessageSquarePlus className="h-6 w-6 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
               </div>
             <input
               type="text"
               required
-              className="block w-full rounded-xl py-4 pl-12 glass-input text-base font-medium"
+              className="block w-full rounded-2xl py-5 pl-16 neu-pressed neu-pressed-focus text-slate-700 placeholder-slate-400 text-lg font-medium"
               placeholder="Enter room name..."
               value={roomName}
               onChange={(e) => setRoomName(e.target.value)}
@@ -100,11 +97,10 @@ export default function Dashboard() {
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={isLoading}
-            className="group relative flex w-full justify-center rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 px-4 py-4 text-base font-bold text-white shadow-lg shadow-purple-500/25 hover:shadow-cyan-500/40 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-[#0a0a0f] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group relative flex w-full justify-center rounded-2xl neu-convex neu-active px-4 py-5 text-base font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Preparing space...' : 'Enter Space'}
           </motion.button>
