@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserPlus, Lock, Mail } from 'lucide-react';
+import { motion } from 'framer-motion';
 import api from '../lib/api';
 
 export default function Register() {
@@ -26,45 +27,65 @@ export default function Register() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8 rounded-2xl bg-gray-800 p-8 shadow-xl border border-gray-700 backdrop-blur-sm">
+    <div className="flex min-h-screen items-center justify-center p-4 overflow-hidden relative">
+      {/* Animated Background Elements */}
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-cyan-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+      <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: '2s' }}></div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-md space-y-8 p-8 glass-panel rounded-3xl relative z-10"
+      >
         <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 mb-4">
-            <UserPlus size={24} />
-          </div>
-          <h2 className="text-3xl font-bold tracking-tight text-white">Create Account</h2>
-          <p className="mt-2 text-sm text-gray-400">Join LuminaChat today</p>
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 text-purple-400 mb-6 border border-white/5"
+          >
+            <UserPlus size={28} />
+          </motion.div>
+          <h2 className="text-4xl font-extrabold tracking-tight text-white mb-2">
+            Join <span className="animated-gradient-text">Lumina</span>
+          </h2>
+          <p className="text-sm text-gray-400 font-medium">Create your new account</p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleRegister}>
+        <form className="mt-10 space-y-6" onSubmit={handleRegister}>
           {error && (
-            <div className="rounded-md bg-red-500/10 p-4 border border-red-500/20">
-              <div className="text-sm text-red-400">{error}</div>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="rounded-xl bg-red-500/10 p-4 border border-red-500/20 backdrop-blur-md"
+            >
+              <div className="text-sm text-red-400 font-medium text-center">{error}</div>
+            </motion.div>
           )}
           
-          <div className="space-y-4 rounded-md shadow-sm">
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Mail className="h-5 w-5 text-gray-500" />
+          <div className="space-y-4">
+            <div className="relative group">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-cyan-400 transition-colors" />
               </div>
               <input
                 type="email"
                 required
-                className="block w-full rounded-lg border border-gray-600 bg-gray-700/50 py-3 pl-10 text-white placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-colors"
+                className="block w-full rounded-xl py-3.5 pl-12 glass-input text-sm"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Lock className="h-5 w-5 text-gray-500" />
+            <div className="relative group">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-cyan-400 transition-colors" />
               </div>
               <input
                 type="password"
                 required
-                className="block w-full rounded-lg border border-gray-600 bg-gray-700/50 py-3 pl-10 text-white placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-colors"
+                className="block w-full rounded-xl py-3.5 pl-12 glass-input text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -72,22 +93,24 @@ export default function Register() {
             </div>
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={isLoading}
-            className="group relative flex w-full justify-center rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group relative flex w-full justify-center rounded-xl bg-gradient-to-r from-cyan-600 to-purple-600 px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-[#0a0a0f] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Creating...' : 'Sign up'}
-          </button>
+            {isLoading ? 'Creating Account...' : 'Sign up'}
+          </motion.button>
         </form>
         
-        <p className="text-center text-sm text-gray-400">
+        <p className="text-center text-sm text-gray-400 pt-4">
           Already have an account?{' '}
-          <Link to="/login" className="font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
+          <Link to="/login" className="font-bold text-purple-400 hover:text-purple-300 transition-colors">
             Sign in
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
