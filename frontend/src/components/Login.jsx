@@ -9,12 +9,19 @@ export default function Login({ setToken }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isWaking, setIsWaking] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setIsWaking(false);
     setError('');
+    
+    // Start a timer to show the "waking up" message if it takes too long
+    const wakeTimer = setTimeout(() => {
+      setIsWaking(true);
+    }, 5000);
     
     try {
       const response = await api.post('/login', { email, password });
@@ -25,7 +32,9 @@ export default function Login({ setToken }) {
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to login');
     } finally {
+      clearTimeout(wakeTimer);
       setIsLoading(false);
+      setIsWaking(false);
     }
   };
 
@@ -98,7 +107,9 @@ export default function Login({ setToken }) {
             disabled={isLoading}
             className="group relative flex w-full justify-center rounded-2xl neu-convex neu-active px-4 py-4 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider mt-8"
           >
-            {isLoading ? 'Signing in...' : 'Sign in'}
+            {isLoading 
+              ? (isWaking ? 'Waking up server (~45s)...' : 'Signing in...') 
+              : 'Sign in'}
           </motion.button>
         </form>
         

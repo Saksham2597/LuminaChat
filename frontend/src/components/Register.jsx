@@ -9,12 +9,19 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isWaking, setIsWaking] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setIsWaking(false);
     setError('');
+    
+    // Start a timer to show the "waking up" message if it takes too long
+    const wakeTimer = setTimeout(() => {
+      setIsWaking(true);
+    }, 5000);
     
     try {
       await api.post('/register', { email, password });
@@ -22,7 +29,9 @@ export default function Register() {
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to register');
     } finally {
+      clearTimeout(wakeTimer);
       setIsLoading(false);
+      setIsWaking(false);
     }
   };
 
@@ -95,7 +104,9 @@ export default function Register() {
             disabled={isLoading}
             className="group relative flex w-full justify-center rounded-2xl neu-convex neu-active px-4 py-4 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider mt-8"
           >
-            {isLoading ? 'Creating Account...' : 'Sign up'}
+            {isLoading 
+              ? (isWaking ? 'Waking up server (~45s)...' : 'Creating Account...') 
+              : 'Sign up'}
           </motion.button>
         </form>
         
