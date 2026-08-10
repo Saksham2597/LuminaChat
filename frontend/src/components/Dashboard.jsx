@@ -1,27 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageSquarePlus, LogOut, LayoutGrid } from 'lucide-react';
+import { MessageSquarePlus, LogOut, LayoutGrid, Hash } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../lib/api';
 
 export default function Dashboard() {
   const [roomName, setRoomName] = useState('');
+  const [availableRooms, setAvailableRooms] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleCreateRoom = async (e) => {
-    e.preventDefault();
-    if (!roomName.trim()) return;
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const res = await api.get('/rooms');
+        setAvailableRooms(res.data);
+      } catch (err) {
+        console.error("Failed to fetch rooms:", err);
+      }
+    };
+    fetchRooms();
+  }, []);
+
+  const handleCreateOrJoinRoom = async (e, nameOverride = null) => {
+    if (e) e.preventDefault();
+    const finalRoomName = nameOverride || roomName;
+    if (!finalRoomName.trim()) return;
     
     setIsLoading(true);
     setError('');
     
     try {
-      const response = await api.post('/rooms', { name: roomName });
+      const response = await api.post('/rooms', { name: finalRoomName });
       navigate(`/chat/${response.data.id}`);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to create room');
+      setError(err.response?.data?.error || 'Failed to enter room');
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +69,7 @@ export default function Dashboard() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-lg space-y-8 p-12 neu-flat rounded-[2.5rem] relative z-10 mt-10"
+        className="w-full max-w-lg space-y-8 p-12 neu-flat rounded-[2.5rem] relative z-10 mt-6"
       >
         <div className="text-center">
           <motion.div 
@@ -68,10 +82,10 @@ export default function Dashboard() {
           <h2 className="text-4xl font-extrabold tracking-tight text-slate-700 mb-3">
             Join a Space
           </h2>
-          <p className="text-slate-500 font-medium">Create a new room or enter an existing one.</p>
+          <p className="text-slate-500 font-medium">Create a new room or join an active one.</p>
         </div>
 
-        <form className="mt-12 space-y-8" onSubmit={handleCreateRoom}>
+        <form className="mt-12 space-y-8" onSubmit={(e) => handleCreateOrJoinRoom(e)}>
           {error && (
             <motion.div 
               initial={{ opacity: 0, height: 0 }}
@@ -102,9 +116,29 @@ export default function Dashboard() {
             disabled={isLoading}
             className="group relative flex w-full justify-center rounded-2xl neu-convex neu-active px-4 py-5 text-base font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Preparing space...' : 'Enter Space'}
+            {isLoading ? 'Connecting...' : 'Join Space'}
           </motion.button>
         </form>
+
+        {availableRooms.length > 0 && (
+          <div className="pt-8 border-t border-slate-300/30">
+            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Available Spaces</h3>
+            <div className="flex flex-wrap gap-4">
+              {availableRooms.map((room) => (
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  key={room.id}
+                  onClick={() => handleCreateOrJoinRoom(null, room.name)}
+                  className="flex items-center gap-2 px-5 py-3 rounded-2xl neu-convex neu-active text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+                >
+                  <Hash size={16} className="text-indigo-400" />
+                  {room.name}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        )}
+
       </motion.div>
     </div>
   );

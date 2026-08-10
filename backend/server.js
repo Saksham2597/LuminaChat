@@ -54,6 +54,18 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get('/rooms', async (req, res) => {
+  try {
+    const rooms = await prisma.room.findMany({
+      orderBy: { name: 'asc' }
+    });
+    res.json(rooms);
+  } catch (error) {
+    console.error("Fetch rooms error:", error);
+    res.status(500).json({ error: "Failed to fetch rooms" });
+  }
+});
+
 app.post('/rooms', async (req, res) => {
   try {
     const { name } = req.body;
@@ -62,14 +74,22 @@ app.post('/rooms', async (req, res) => {
       return res.status(400).json({ error: "Room name is required" });
     }
 
-    const room = await prisma.room.create({ 
+    let room = await prisma.room.findUnique({
+      where: { name }
+    });
+
+    if (room) {
+      return res.status(200).json(room);
+    }
+
+    room = await prisma.room.create({ 
       data: { name } 
     });
     
     res.status(201).json(room);
   } catch (error) {
     console.error("Room creation error:", error);
-    res.status(400).json({ error: "Could not create room. It might already exist." });
+    res.status(500).json({ error: "Could not join or create room." });
   }
 });
 
